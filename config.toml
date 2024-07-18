@@ -1,0 +1,9 @@
+vivadohls_install_path = "C:/Xilinx/Vivado/2018.3/bin/vivado_hls.bat"
+vivado_install_path = "C:/Xilinx/Vivado/2018.3/bin/vivado.bat" 
+
+part = "xc7s25csga324-1"
+
+cflags = [
+    "-IC:/CProjects/marto-src/include",
+    "-std=c++0x"
+]
