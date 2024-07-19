@@ -9,7 +9,7 @@ set_top compute
 
 open_solution "solution1"
 
-set_part {$::env(PART)} -tool vivado
+set_part $::env(PART) -tool vivado
 create_clock -period $::env(CLOCK_PERIOD) -name default
 #source "./param-int-final/solution1/directives.tcl"
 

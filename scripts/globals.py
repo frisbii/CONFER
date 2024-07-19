@@ -12,7 +12,7 @@ with open(PROJECT_ROOT/'config.toml', 'rb') as f:
 
 tlds = [
     'saved',
-    'rpt'
+    'rpt',
     'plots',
 ]
 for tld in tlds:

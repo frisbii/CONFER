@@ -2,6 +2,7 @@ import datetime
 from pathlib import Path
 import subprocess
 from globals import PROJECT_ROOT, CONFIG
+import os
 
 TIME : str
 
@@ -33,8 +34,8 @@ def process_paramaterization(
     
     dow = f'{d}_{o}_{w}'
 
-    # Environment variable strings
-    env = {
+    # Extend the existing environment
+    env = os.environ | {
         'PRJ_FOLDER' : Path.as_posix(PRJ_FOLDER),
         'PRJ_NAME' : dow,
         'SRC_FILE' : Path.as_posix(PROJECT_ROOT / 'src' / f'{d}.cpp'),
@@ -49,7 +50,8 @@ def process_paramaterization(
             CONFIG['vivadohls_install_path'],
             '-f', str(PROJECT_ROOT / 'scripts' / 'vhls_generate_ip.tcl'),
             '-l', str(LOG_FOLDER / f'{dow}_vhls.log')
-        ]
+        ],
+        env=env
     )
 
 
