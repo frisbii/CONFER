@@ -1,4 +1,4 @@
-cd $::env(PRJ_FOLDER)
+cd $::env(PRJ_DIR)
 
 open_project -reset $::env(PRJ_NAME)
 

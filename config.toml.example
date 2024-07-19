@@ -1,11 +1,6 @@
-vivadohls_install_path = "/opt/Xilinx/Vivado/2017.4/bin/vivado_hls"
+vhls_install_path = "/opt/Xilinx/Vivado/2017.4/bin/vivado_hls"
 vivado_install_path = "/opt/Xilinx/Vivado/2017.4/bin/vivado" 
 
 part = "xc7s50csga324-1"
 
 cflags = []
-
-# cflags = [
-#     "-IC:/CProjects/marto-src/include",
-#     "-std=c++0x"
-# ]

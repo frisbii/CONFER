@@ -1,58 +1,51 @@
-import datetime
+from datetime import datetime
 from pathlib import Path
 import subprocess
 from globals import PROJECT_ROOT, CONFIG
 import os
 
-TIME : str
 
-RUN_FOLDER : Path
-LOG_FOLDER : Path
-RPT_FOLDER : Path
-PRJ_FOLDER : Path
+class ReportGenerator:
+    def __init__(self):
+        now: datetime = datetime.now()
+        self.timestamp: str = (
+            f"{now.year}-{now.month}-{now.day}_{now.hour}-{now.minute}-{now.second}"
+        )
 
-now  : datetime.datetime = datetime.datetime.now()
-TIME = f"{now.year}-{now.month}-{now.day}_{now.hour}-{now.minute}-{now.second}"
+        self.run_dir: Path = PROJECT_ROOT / "saved" / self.timestamp
+        self.log_dir: Path = self.run_dir / "log"
+        self.prj_dir: Path = self.run_dir / "prj"
+        self.rpt_dir: Path = self.run_dir / "rpt"
 
-RUN_FOLDER = PROJECT_ROOT / 'saved' / TIME
-LOG_FOLDER = RUN_FOLDER / 'log'
-RPT_FOLDER = RUN_FOLDER / 'rpt'
-PRJ_FOLDER = RUN_FOLDER / 'prj'
+        for dir in [self.run_dir, self.log_dir, self.prj_dir, self.rpt_dir]:
+            dir.mkdir()
 
-Path.mkdir(RUN_FOLDER)
-Path.mkdir(LOG_FOLDER)
-Path.mkdir(RPT_FOLDER)
-Path.mkdir(PRJ_FOLDER)
+    def process_paramaterization(self, datatype: str, operation: str, width: int):
+        param_str = f"{datatype}_{operation}_{width}"
 
+        # Extend the existing environment
+        env = os.environ | {
+            "PRJ_DIR": self.prj_dir.as_posix(),
+            "PRJ_NAME": param_str,
+            "SRC_FILE": Path.as_posix(PROJECT_ROOT / "src" / f"{datatype}.cpp"),
+            "HEADER_FILE": Path.as_posix(PROJECT_ROOT / "src" / "params.hpp"),
+            "CFLAGS": " ".join(
+                CONFIG["cflags"] + [f"-D{operation}", f"-DWIDTH={width}"]
+            ),
+            "PART": CONFIG["part"],
+            "CLOCK_PERIOD": "10",
+        }
 
-
-def process_paramaterization(
-    d: str,
-    o: str,
-    w: int
-):
-    
-    dow = f'{d}_{o}_{w}'
-
-    # Extend the existing environment
-    env = os.environ | {
-        'PRJ_FOLDER' : Path.as_posix(PRJ_FOLDER),
-        'PRJ_NAME' : dow,
-        'SRC_FILE' : Path.as_posix(PROJECT_ROOT / 'src' / f'{d}.cpp'),
-        'HEADER_FILE' : Path.as_posix(PROJECT_ROOT / 'src' / 'params.hpp'),
-        'CFLAGS' : ' '.join(CONFIG['cflags'] + [f'-D{o}', f'-DWIDTH={w}']), 
-        'PART' : CONFIG['part'],
-        'CLOCK_PERIOD' : '10'
-    }
-
-    subprocess.run(
-        [
-            CONFIG['vivadohls_install_path'],
-            '-f', str(PROJECT_ROOT / 'scripts' / 'vhls_generate_ip.tcl'),
-            '-l', str(LOG_FOLDER / f'{dow}_vhls.log')
-        ],
-        env=env
-    )
+        subprocess.run(
+            [
+                CONFIG["vhls_install_path"],
+                "-f",
+                str(PROJECT_ROOT / "scripts" / "vhls_generate_ip.tcl"),
+                "-l",
+                str(self.log_dir / f"{param_str}-vhls.log"),
+            ],
+            env=env,
+        )
 
 
-process_paramaterization('uint', 'ADD', 4)
+ReportGenerator().process_paramaterization("uint", "ADD", 4)

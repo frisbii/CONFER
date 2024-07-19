@@ -1,20 +1,13 @@
-import datetime
-import tomllib
 from pathlib import Path
+import tomllib
 
 
-PROJECT_ROOT : Path = Path(__file__).parent.parent
+PROJECT_ROOT: Path = Path(__file__).parent.parent
 
 
-with open(PROJECT_ROOT/'config.toml', 'rb') as f:
-    CONFIG = tomllib.load(f)
-    
+with open(PROJECT_ROOT / "config.toml", "rb") as f:
+    CONFIG: dict[str, any] = tomllib.load(f)
 
-tlds = [
-    'saved',
-    'rpt',
-    'plots',
-]
-for tld in tlds:
-    Path.mkdir(PROJECT_ROOT/tld, exist_ok=True)
-    
+
+for dir in ["saved", "rpt", "plots"]:
+    Path.mkdir(PROJECT_ROOT / dir, exist_ok=True)
