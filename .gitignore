@@ -6,8 +6,11 @@ rpt/
 saved/
 
 __pycache__/
+.venv/
 .Xil/
 
 .vscode/
 
 rpt_stable/
+.venv/
+.Xil/
