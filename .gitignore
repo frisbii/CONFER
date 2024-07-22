@@ -1,3 +1,4 @@
+data.hdf
 config.toml
 
 plots/
@@ -5,3 +6,4 @@ rpt/
 saved/
 
 __pycache__/
+.Xil/

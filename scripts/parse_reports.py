@@ -24,7 +24,7 @@ def main():
         row : dict[str, str | int | float] = {
             'datatype' : datatype,
             'operation' : operation,
-            'width' : width,
+            'width' : int(width),
         }
         with rpt.open() as f:
             raw_contents : str = f.read()
