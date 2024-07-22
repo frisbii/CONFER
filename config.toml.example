@@ -1,6 +1,56 @@
-vhls_install_path = "/opt/Xilinx/Vivado/2017.4/bin/vivado_hls"
-vivado_install_path = "/opt/Xilinx/Vivado/2017.4/bin/vivado" 
+#########################
+#   Run Dependencies    #
+#########################
 
+# Full path specifying the installation location of Vivado HLS
+vhls_install_path = "C:/Xilinx/Vivado/2018.3/bin/vivado_hls.bat"
+
+# Full path specifying the installation location of Vivado
+vivado_install_path = "C:/Xilinx/Vivado/2018.3/bin/vivado.bat" 
+
+# List of C-flags to pass to Vivado's C/C++ interpreter
+#   cflags[0]   Full path specifying the location of the include directory
+#               containing C++ dependencies
+#   cflags[1]   An argument necessary to synthesize with dependencies
+cflags = [
+    "-IC:/CProjects/marto-src/include",
+    "-std=c++0x"
+]
+
+# Part number corresponding to target Xilinx FPGA part to synthesize to
 part = "xc7s50csga324-1"
 
-cflags = []
+
+
+#####################
+#   Run Controls    #
+#####################
+
+# Maximum number of processes to spawn at a time when generating reports
+max_processes = 10
+
+# Datatypes to generate reports for
+#   type        list[str]
+#   contents    `name` corresponding to {name}.cpp files in ROOT/src.
+datatypes = [
+    'sint',
+    'sfxp'
+]
+
+# Operations to generate reports for
+#   type        list[str]
+#   contents    `NAME` corresponding to `NAME` macros in the src files
+#               which select which implemented operation to generate.
+operations = [
+    'ADD',
+    'MUL'
+]
+
+# Widths to generate reports for
+#   type            str | list[int]
+#   if type==str    Interpreted as "{start}-{end}" where `start` is the
+#                   first width to generate, `end` is one greater than
+#                   the last width to generate, and every integer width
+#                   between these ends is generated.
+#   if type==list   Only the specified integer widths are generated.
+widths = "1-17"
