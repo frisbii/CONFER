@@ -20,7 +20,7 @@ df = df.set_index(['datatype', 'operation', 'width'])
 num_datatypes = len(set([i[0] for i in df.index]))
 num_operations = len(set([i[1] for i in df.index]))
 
-fig, axs = plt.subplots(3 * num_operations, num_datatypes, layout='constrained', sharex=True, sharey='row')
+fig, axs = plt.subplots(3 * num_operations, num_datatypes, layout='constrained', sharex=True, )
 axes_lookup = {}
 for j, datatype in enumerate(set([i[0] for i in df.index])):
     if datatype not in axes_lookup: axes_lookup[datatype] = {}
@@ -31,7 +31,6 @@ for j, datatype in enumerate(set([i[0] for i in df.index])):
         axes_lookup[datatype][operation]['power'] = (i*3 + 2, j)
 
 def make_plots(datatype, operation):
-    print(datatype)
     table = df.loc[pair, :]
 
     # primitives

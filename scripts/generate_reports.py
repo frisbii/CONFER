@@ -37,8 +37,7 @@ class ReportGenerator:
             "CFLAGS": " ".join(
                 CONFIG["cflags"] + [f"-D{operation}", f"-DWIDTH={width}"]
             ),
-            "PART": CONFIG["part"],
-            "CLOCK_PERIOD": "10",
+            "PART": CONFIG["part"]
         }
 
         subprocess.run(
