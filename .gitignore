@@ -6,4 +6,5 @@ rpt/
 saved/
 
 __pycache__/
+.venv/
 .Xil/
