@@ -18,7 +18,12 @@ cflags = [
 ]
 
 # Part number corresponding to target Xilinx FPGA part to synthesize to
+#   default: "xc7s50csga324-1" (Arty S7-50)
 part = "xc7s50csga324-1"
+
+# Clock period to target for synthesis, in nanoseconds
+#   default: 10ns
+clk_period = 10
 
 
 
@@ -27,14 +32,21 @@ part = "xc7s50csga324-1"
 #####################
 
 # Maximum number of processes to spawn at a time when generating reports
-max_processes = 10
+max_processes = 6
+
+# NONFUNCTIONAL
+# Flag to determine whether to spawn a separate console for each report.
+# Only one console will ever be spawned at a time. Thus, max_processes is
+# de facto overriden to be equal to 1.
+#spawn_console = true
 
 # Datatypes to generate reports for
 #   type        list[str]
 #   contents    `name` corresponding to {name}.cpp files in ROOT/src.
 datatypes = [
-    'sint',
-    'sfxp'
+    'uint',
+    'float',
+    'posit'
 ]
 
 # Operations to generate reports for
@@ -52,5 +64,7 @@ operations = [
 #                   first width to generate, `end` is one greater than
 #                   the last width to generate, and every integer width
 #                   between these ends is generated.
+#                   ex: "8-17"
 #   if type==list   Only the specified integer widths are generated.
-widths = "1-17"
+#                   ex: [4, 8, 16]
+widths = "8-17"

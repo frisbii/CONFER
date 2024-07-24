@@ -1,5 +1,6 @@
 data.hdf
 config.toml
+*.csv
 
 plots/
 rpt/
@@ -11,6 +12,8 @@ __pycache__/
 
 .vscode/
 
-rpt_stable/
+rpt*/
 .venv/
 .Xil/
+
+*.exe

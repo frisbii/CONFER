@@ -3,6 +3,7 @@ import pandas as pd
 import vivado_report_parser as vrp
 from pathlib import Path
 from globals import PROJECT_ROOT, CONFIG
+import argparse
 
 def first_float(s: str) -> float:
     match = re.search('[0-9]+(?:.[0-9]+)?', s)
@@ -12,6 +13,15 @@ def first_float(s: str) -> float:
         return float(match[0])
     
 def main():
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        '-f',
+        default="data.hdf",
+        help="specify a filename for the resulting hdf (default: /data.hdf)",
+        metavar="file"
+    )
+    outfile = parser.parse_args().f
 
     # startup tasks
     rpt_dir : Path = PROJECT_ROOT / 'rpt'
@@ -52,7 +62,7 @@ def main():
     # pandas dataframe setup
     df: pd.DataFrame = pd.DataFrame(rows)
     df = df.groupby(['datatype', 'operation', 'width']).aggregate("first").reset_index()
-    df.to_hdf(PROJECT_ROOT / 'data.hdf', key='df')
+    df.to_hdf(PROJECT_ROOT / outfile, key='df')
 
 
 if __name__ == "__main__":

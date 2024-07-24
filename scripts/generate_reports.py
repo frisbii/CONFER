@@ -37,7 +37,8 @@ class ReportGenerator:
             "CFLAGS": " ".join(
                 CONFIG["cflags"] + [f"-D{operation}", f"-DWIDTH={width}"]
             ),
-            "PART": CONFIG["part"]
+            "PART": CONFIG["part"],
+            "CLK_PERIOD": str(CONFIG["clk_period"])
         }
 
         subprocess.run(
@@ -49,8 +50,9 @@ class ReportGenerator:
                 str(self.log_dir / f"{param_str}-vhls.log"),
             ],
             env=env,
-            stdout=subprocess.DEVNULL
-        ).check_returncode()
+            stdout=subprocess.DEVNULL,
+            check=True
+        )
 
         env = os.environ | {
             "XPR_FILE" : str(self.prj_dir / param_str / "solution1" / "impl" / "verilog" / "project.xpr"),
@@ -72,8 +74,9 @@ class ReportGenerator:
                 str(PROJECT_ROOT / "scripts" / "vivado_generate_reports.tcl")
             ],
             env=env,
-            stdout=subprocess.DEVNULL
-        ).check_returncode()
+            stdout=subprocess.DEVNULL,
+            check=True
+        )
     
     def process_paramaterizations(self, datatypes: list[str], operations: list[str], widths: list[int]):
         paramaterizations = list(itertools.product(datatypes, operations, widths))
