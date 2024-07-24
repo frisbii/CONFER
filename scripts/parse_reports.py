@@ -21,10 +21,18 @@ def main():
         help="specify a filename for the resulting hdf (default: /data.hdf)",
         metavar="file"
     )
-    outfile = parser.parse_args().f
+    parser.add_argument(
+        '-d',
+        default="rpt",
+        help="specify an rpt directory (default: /rpt)",
+        metavar="dir"
+    )
+    args = parser.parse_args()
+    indir = args.d
+    outfile = args.f
 
     # startup tasks
-    rpt_dir : Path = PROJECT_ROOT / 'rpt'
+    rpt_dir : Path = PROJECT_ROOT / indir
 
     # file parsing
     rows = []

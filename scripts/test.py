@@ -6,11 +6,9 @@ import itertools
 
 from globals import PROJECT_ROOT, CONFIG
 
-df_path = PROJECT_ROOT / "data.hdf"
-if sys.argv[1]:
-    df_path = sys.argv[1]
+df_path = PROJECT_ROOT / "out.hdf"
 
-df: pd.DataFrame = pd.read_hdf(df_path, key="df")
+df = pd.read_hdf(df_path, key="df")
 # df = df.sort_index(axis=1)
 
 # df = df.set_index(['datatype', 'operation', 'width'])
@@ -81,10 +79,10 @@ def plot_utilization(datatype: str, operation: str, *, aggregate_luts=True):
         utilization = aggregate_lut_utilization(utilization)
     utilization.plot(kind='bar', stacked=True, width=1, title=f'{datatype}_{operation}')
 
-for pair in itertools.product(['float', 'posit'], ['ADD', 'MUL']):
+for pair in itertools.product(['uint', 'float', 'posit'], ['ADD', 'MUL']):
     plot_utilization(*pair)
 
-plt.show()
+plt.savefig('test.png')
 
 # Stacked Line Plot
 # data = (
