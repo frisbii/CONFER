@@ -2,12 +2,14 @@ from datetime import datetime
 from pathlib import Path
 import subprocess
 from time import sleep
-from globals import PROJECT_ROOT, CONFIG
+from globals import PROJECT_ROOT, CONFIG, Parameters
 from concurrent.futures import ThreadPoolExecutor, as_completed
-import itertools
 import os
 from progress.bar import IncrementalBar
 import shutil
+
+
+
 
 
 class ReportGenerator:
@@ -25,29 +27,27 @@ class ReportGenerator:
         for dir in [self.run_dir, self.log_dir, self.prj_dir, self.rpt_dir]:
             dir.mkdir()
 
-    def process_paramaterization(self, datatype: str, operation: str, width: int):
-        param_str = f"{datatype}_{operation}_{width}"
-
+    def process_paramaterization(self, params: Parameters):
         # Extend the existing environment in preparation for the VHLS script
         env = os.environ | {
             "PRJ_DIR": self.prj_dir.as_posix(),
-            "PRJ_NAME": param_str,
-            "SRC_FILE": Path.as_posix(PROJECT_ROOT / "src" / f"{datatype}.cpp"),
+            "PRJ_NAME": str(params),
+            "SRC_FILE": Path.as_posix(PROJECT_ROOT / "src" / f"{params.datatype}.cpp"),
             "HEADER_FILE": Path.as_posix(PROJECT_ROOT / "src" / "params.hpp"),
             "CFLAGS": " ".join(
-                CONFIG["cflags"] + [f"-D{operation}", f"-DWIDTH={width}"]
+                CONFIG.cflags + [f"-D{params.operation}", f"-DWIDTH={params.width}"]
             ),
-            "PART": CONFIG["part"],
-            "CLK_PERIOD": str(CONFIG["clk_period"])
+            "PART": params.part,
+            "CLK_PERIOD": str(params.period)
         }
 
         subprocess.run(
             [
-                CONFIG["vhls_install_path"],
+                CONFIG.vhls_install_path,
                 "-f",
                 str(PROJECT_ROOT / "scripts" / "vhls_generate_ip.tcl"),
                 "-l",
-                str(self.log_dir / f"{param_str}-vhls.log"),
+                str(self.log_dir / f"{str(params)}---vhls.log"),
             ],
             env=env,
             stdout=subprocess.DEVNULL,
@@ -55,19 +55,19 @@ class ReportGenerator:
         )
 
         env = os.environ | {
-            "XPR_FILE" : str(self.prj_dir / param_str / "solution1" / "impl" / "verilog" / "project.xpr"),
-            "UTIL_FILE" : str(self.rpt_dir / f"{param_str}-utilization.rpt"),
-            "TIME_FILE" : str(self.rpt_dir / f"{param_str}-timing.rpt"),
-            "POWER_FILE" : str(self.rpt_dir / f"{param_str}-power.rpt")
+            "XPR_FILE" : str(self.prj_dir / str(params) / "solution1" / "impl" / "verilog" / "project.xpr"),
+            "UTIL_FILE" : str(self.rpt_dir / f"{str(params)}---utilization.rpt"),
+            "TIME_FILE" : str(self.rpt_dir / f"{str(params)}---timing.rpt"),
+            "POWER_FILE" : str(self.rpt_dir / f"{str(params)}---power.rpt")
         }
 
         subprocess.run(
             [
-                CONFIG["vivado_install_path"],
+                CONFIG.vivado_install_path,
                 "-journal",
-                str(self.log_dir / f"{param_str}-vivado.jou"),
+                str(self.log_dir / f"{str(params)}---vivado.jou"),
                 "-log",
-                str(self.log_dir / f"{param_str}-vivado.log"),
+                str(self.log_dir / f"{str(params)}---vivado.log"),
                 "-mode",
                 "batch",
                 "-source",
@@ -78,12 +78,11 @@ class ReportGenerator:
             check=True
         )
     
-    def process_paramaterizations(self, datatypes: list[str], operations: list[str], widths: list[int]):
-        paramaterizations = list(itertools.product(datatypes, operations, widths))
-        bar = IncrementalBar("yippee", max=len(paramaterizations), suffix='%(elapsed_td)s | %(index)s / %(max)s')
+    def process_paramaterizations(self, paramaterizations):
+        bar = IncrementalBar("Report Generation", max=len(paramaterizations), suffix='%(elapsed_td)s | %(index)s / %(max)s')
         bar.update()
-        with ThreadPoolExecutor(CONFIG["max_processes"]) as executor:
-            futures = [executor.submit(self.process_paramaterization, *params) for params in paramaterizations]
+        with ThreadPoolExecutor(CONFIG.max_processes) as executor:
+            futures = [executor.submit(self.process_paramaterization, params) for params in paramaterizations]
             for future in as_completed(futures):
                 bar.next()
         bar.finish()
@@ -93,11 +92,7 @@ class ReportGenerator:
 
 def main():
 
-    ReportGenerator().process_paramaterizations(
-        CONFIG["datatypes"],
-        CONFIG["operations"],
-        CONFIG["widths"]
-    )
+    ReportGenerator().process_paramaterizations(CONFIG.generate_paramaterizations())
 
 
 if __name__ == "__main__":
