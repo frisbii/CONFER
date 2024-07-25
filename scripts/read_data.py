@@ -4,32 +4,31 @@ import pandas as pd
 from globals import PROJECT_ROOT
 import seaborn as sns
 import matplotlib.pyplot as plt
-
-pd.options.mode.chained_assignment = None
-
-
         
 def generate_plots():
     global df
-
     # define total design space (operation, datatype, part, period)
     operations = ['ADD', 'MUL']
     datatypes = ['uint', 'sint', 'ufxp', 'sfxp', 'float', 'posit']
     parts = ['xc7k160tfbg484-1', 'xc7s50csga324-1']
     periods = [3, 10, 1000000]
-
-    specified_params = [['MUL'], None, ['xc7k160tfbg484-1'], [3]]
-
+    # choose which parameters to hold fixed for thsi run
+    specified_params = [
+        ['ADD'], 
+        None, 
+        ["xc7s50csga324-1"], 
+        [3]
+    ]
+    # fill the list of desired plots for this run
     parameters = list(itertools.product(
         specified_params[0] if specified_params[0] is not None else operations, 
         specified_params[1] if specified_params[1] is not None else datatypes, 
         specified_params[2] if specified_params[2] is not None else parts, 
         specified_params[3] if specified_params[3] is not None else periods, 
         ))
-    num_plots = len(parameters)
-
+    # create figure and prepare subfigures
     fig = plt.figure()
-    sfigs = fig.subfigures(1, num_plots)
+    sfigs = fig.subfigures(1, len(parameters))
 
     # VISUALIZATION
     for i, p in enumerate(parameters):
@@ -45,6 +44,7 @@ def generate_plots():
             axs[0].set_ylabel("Primitives count")
             axs[1].set_ylabel("Delay (ns)")
             axs[2].set_ylabel("Power usage (W)")
+        axs[2].set_xlabel("Bit width")
 
         ##############
         # PRIMITIVES
@@ -90,12 +90,6 @@ def generate_plots():
 
 def main():
     global df
-
-    # Set seaborn matplotlib theme
-    #sns.set_theme()
-    # Set legend size to x-small for space
-    plt.rc('legend', fontsize='x-small')
-
     ####################
     # ARGUMENT PARSING
     parser = argparse.ArgumentParser()
@@ -109,9 +103,17 @@ def main():
     infile = args.f
     ####################
 
+    ####################
+    # PLOT STYLING
+    # Set seaborn matplotlib theme
+    sns.set_theme()
+    sns.set_context(rc = {'patch.linewidth': 0.0})
+    # Set legend size to x-small for space
+    plt.rc('legend', fontsize='x-small')
+    ####################
+
     # Load dataframe
     df = pd.read_hdf(PROJECT_ROOT / infile, key='df')
-
     # Generates comparison plots for specified parameters
     generate_plots()
 

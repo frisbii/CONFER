@@ -29,7 +29,7 @@ def process_utilization(util_dict):
     
 
 def wrangle_dataframe(df):
-
+    # Maintain list of found primitives to select those columns later
     existing_primitives = set()
     # For each row of the dataframe
     for i in range(len(df)):
@@ -41,14 +41,13 @@ def wrangle_dataframe(df):
             if cat not in df:
                 df[cat] = 0 # Initialize with zeroes
             # Assign the value processed
-            df[cat][i] = categories[cat]
-            
+            df.loc[i, cat] = categories[cat]
+            # Add to the list of found primitives
             existing_primitives.add(cat)
-    
+    # Set index, sort index, choose relevant columns, and return
     df = df.set_index(['operation', 'datatype', 'part', 'period', 'width']) \
            .sort_index() \
            .loc[:, ['delay_route', 'delay_logic', 'power_static', 'power_dynamic'] + list(existing_primitives)]
-
     return df
     
 def main():
