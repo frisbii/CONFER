@@ -12,6 +12,45 @@ def first_float(s: str) -> float:
     else:
         return float(match[0])
     
+def process_utilization(util_dict):
+    capture = {'Flop & Latch': 'Reg', 'LUT': 'LUTx', 'CarryLogic': 'CARRY'}
+    categories = {key: 0 for key in capture.values()}
+
+    for primitive_type in util_dict:
+        if (primitive_type['Functional Category'] in capture):
+            categories[capture[primitive_type['Functional Category']]] += int(primitive_type['Used'])
+        else:
+            if (primitive_type['Ref Name'] in categories):
+                categories[primitive_type['Ref Name']] += int(primitive_type['Used'])
+            else:
+                categories[primitive_type['Ref Name']] = int(primitive_type['Used'])
+
+    return categories
+    
+
+def wrangle_dataframe(df):
+
+    existing_primitives = set()
+    # For each row of the dataframe
+    for i in range(len(df)):
+        # Get a dictionary of primitive usage for these paramaters
+        categories = process_utilization(df['primitives'].iloc[i])
+        # For each of the primitives found
+        for cat in categories:
+            # If this primitive is not currently tabulated, add to the dataframe
+            if cat not in df:
+                df[cat] = 0 # Initialize with zeroes
+            # Assign the value processed
+            df[cat][i] = categories[cat]
+            
+            existing_primitives.add(cat)
+    
+    df = df.set_index(['operation', 'datatype', 'part', 'period', 'width']) \
+           .sort_index() \
+           .loc[:, ['delay_route', 'delay_logic', 'power_static', 'power_dynamic'] + list(existing_primitives)]
+
+    return df
+    
 def main():
 
     parser = argparse.ArgumentParser()
@@ -37,12 +76,14 @@ def main():
     # file parsing
     rows = []
     for rpt in rpt_dir.iterdir():
-        param_str, rpt_type = rpt.stem.split('-')
-        datatype, operation, width = param_str.split('_')
+        param_str, rpt_type = rpt.stem.split('---')
+        datatype, operation, width, part, period = param_str.split('_')
         row : dict[str, str | int | float] = {
             'datatype' : datatype,
             'operation' : operation,
             'width' : int(width),
+            'part' : part,
+            'period' : int(period),
         }
         with rpt.open() as f:
             raw_contents : str = f.read()
@@ -69,8 +110,13 @@ def main():
     
     # pandas dataframe setup
     df: pd.DataFrame = pd.DataFrame(rows)
-    df = df.groupby(['datatype', 'operation', 'width']).aggregate("first").reset_index()
-    df.to_hdf(PROJECT_ROOT / outfile, key='df')
+    df = df.groupby(['datatype', 'operation', 'width', 'part', 'period']).aggregate("first").reset_index()
+
+    df = wrangle_dataframe(df)
+
+    df.to_html('out.html')
+    df.to_hdf('data.hdf', key='df')
+    
 
 
 if __name__ == "__main__":
