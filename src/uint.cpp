@@ -10,7 +10,7 @@ void compute
     ap_uint<WIDTH> in1,
     #ifdef ADD
         ap_uint<WIDTH> *out
-    #else
+    #elif defined MUL 
         ap_uint<WIDTH> *out
     #endif
 )
@@ -18,7 +18,7 @@ void compute
 #pragma HLS INTERFACE ap_ctrl_none port=return
     #ifdef ADD
 	    *out = in0 + in1;
-    #else
+    #elif defined MUL 
 	    *out = in0 * in1;
     #endif
 }

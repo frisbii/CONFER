@@ -17,15 +17,6 @@ cflags = [
     "-std=c++0x"
 ]
 
-# Part number corresponding to target Xilinx FPGA part to synthesize to
-#   default: "xc7s50csga324-1" (Arty S7-50)
-part = "xc7s50csga324-1"
-
-# Clock period to target for synthesis, in nanoseconds
-#   default: 10ns
-clk_period = 10
-
-
 
 #####################
 #   Run Controls    #
@@ -44,9 +35,7 @@ max_processes = 6
 #   type        list[str]
 #   contents    `name` corresponding to {name}.cpp files in ROOT/src.
 datatypes = [
-    'uint',
-    'float',
-    'posit'
+    'uint'
 ]
 
 # Operations to generate reports for
@@ -54,7 +43,6 @@ datatypes = [
 #   contents    `NAME` corresponding to `NAME` macros in the src files
 #               which select which implemented operation to generate.
 operations = [
-    'ADD',
     'MUL'
 ]
 
@@ -67,4 +55,15 @@ operations = [
 #                   ex: "8-17"
 #   if type==list   Only the specified integer widths are generated.
 #                   ex: [4, 8, 16]
-widths = "8-17"
+widths = [4, 6, 8, 10, 12, 14, 16]
+
+# Part number corresponding to target Xilinx FPGA part to synthesize to
+#   default: "xc7s50csga324-1" (Arty S7-50)
+#   xc7k160tfbg484-1 (Kintex 7; Uguen et al. 2019)
+parts = [
+    "xc7k160tfbg484-1"
+]
+
+# Clock period to target for synthesis, in nanoseconds
+#   default: 10ns
+periods = [3]

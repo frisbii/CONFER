@@ -4,6 +4,7 @@ open_project -reset $::env(PRJ_NAME)
 
 add_files $::env(SRC_FILE) -cflags $::env(CFLAGS)
 add_files $::env(HEADER_FILE)
+set_directive_bind_op -op mul -impl fabric "compute" out
 
 set_top compute
 
