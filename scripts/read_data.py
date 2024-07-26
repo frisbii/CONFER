@@ -4,6 +4,15 @@ import pandas as pd
 from globals import PROJECT_ROOT
 import seaborn as sns
 import matplotlib.pyplot as plt
+from matplotlib.container import BarContainer
+import mplcursors
+
+def show_annotation(sel: mplcursors.Selection):
+    if type(sel.artist) == BarContainer:
+        bar = sel.artist[sel.index]
+        sel.annotation.set_text(f'{sel.artist.get_label()}: {bar.get_height():.3f}')
+        sel.annotation.xy = (bar.get_x() + bar.get_width() / 2, bar.get_y() + bar.get_height() / 2)
+        sel.annotation.get_bbox_patch().set_alpha(0.8)
         
 def generate_plots():
     global df
@@ -12,10 +21,10 @@ def generate_plots():
     datatypes = ['uint', 'sint', 'ufxp', 'sfxp', 'float', 'posit']
     parts = ['xc7k160tfbg484-1', 'xc7s50csga324-1']
     periods = [3, 10, 1000000]
-    # choose which parameters to hold fixed for thsi run
+    # choose which parameters to hold fixed for this run
     specified_params = [
         ['ADD'], 
-        None, 
+        ['uint', 'float', 'posit'], 
         ["xc7s50csga324-1"], 
         [3]
     ]
@@ -76,7 +85,7 @@ def generate_plots():
 
         #########
         # POWER
-        d = df.loc[*p].loc[:, ['power_static', 'power_dynamic']].copy() # type: ignore
+        d = df.loc[*p].loc[:, ['power_dynamic']].copy() # type: ignore
         bottom_values = [0] * len(d)
         for col in d.columns:
             # plot each column on top of each other
@@ -85,6 +94,9 @@ def generate_plots():
             bottom_values = [i+j for i, j in zip(bottom_values, d[col])]
         axs[2].legend()
     
+    cursor = mplcursors.cursor(hover=True)
+    cursor.connect('add', show_annotation)  
+
     plt.show()
 
 
