@@ -3,17 +3,24 @@
 #########################
 
 # Full path specifying the installation location of Vivado HLS
-vhls_install_path = "C:/Xilinx/Vivado/2018.3/bin/vivado_hls.bat"
+vhls_install_path = "C:\Xilinx\Vitis_HLS\2023.1\bin\vitis_hls.bat"
 
 # Full path specifying the installation location of Vivado
-vivado_install_path = "C:/Xilinx/Vivado/2018.3/bin/vivado.bat" 
+vivado_install_path = "C:\Xilinx\Vivado\2023.1\bin\vivado.bat" 
+
+# Full path specifying the include folder of the Hint library
+hint_install_path = ""
+# Full path specifying the include folder of the MArTo library
+marto_install_path = ""
+#TODO: ADD FUNCTIONALITY FOR ABOVE
 
 # List of C-flags to pass to Vivado's C/C++ interpreter
 #   cflags[0]   Full path specifying the location of the include directory
 #               containing C++ dependencies
 #   cflags[1]   An argument necessary to synthesize with dependencies
 cflags = [
-    "-IC:/CProjects/marto-src/include",
+    "-C:\Users\mgudin27\include\marto\include",
+    "-C:\Users\mgudin27\include\hint\include",
     "-std=c++0x"
 ]
 
