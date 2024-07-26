@@ -4,6 +4,7 @@ cycler==0.12.1
 fonttools==4.53.1
 kiwisolver==1.4.5
 matplotlib==3.9.1
+mplcursors==0.5.3
 msgpack==1.0.8
 ndindex==1.8
 numexpr==2.10.1
