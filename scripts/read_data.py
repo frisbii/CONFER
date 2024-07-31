@@ -50,7 +50,7 @@ def generate_plots():
 
         #################
         # SUPER STYLING
-        subfig.suptitle('\n'.join([str(x) for x in p]) + 'ns')
+        subfig.suptitle('\n'.join([str(x) for x in p]))
         # If this is the leftmost subfigure, add y-labels
         if i == 0:
             axs[0].set_ylabel("Primitives count")
