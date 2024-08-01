@@ -13,6 +13,3 @@ class Design:
         return (
             f"{self.datatype}_{self.operation}_{self.width}_{self.part}_{self.period}"
         )
-
-
-__all__ = ["Design"]

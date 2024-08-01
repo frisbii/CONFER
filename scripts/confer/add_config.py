@@ -8,6 +8,3 @@ def add_config_path(parser: ArgumentParser) -> None:
     parser.add_argument(
         "--config", dest="config_path", default=PROJECT_ROOT / "config.toml", type=Path
     )
-
-
-__all__ = ["add_config_path"]

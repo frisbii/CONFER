@@ -47,6 +47,3 @@ class Config:
                 self.datatypes, self.operations, self.widths, self.parts, self.periods
             )
         ]
-
-
-__all__ = ["Config"]
