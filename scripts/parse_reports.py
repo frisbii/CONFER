@@ -1,9 +1,12 @@
+import argparse
+from pathlib import Path
 import re
+
 import pandas as pd
 import vivado_report_parser as vrp
-from pathlib import Path
-from globals import PROJECT_ROOT, CONFIG
-import argparse
+
+from confer import PROJECT_ROOT
+
 
 def first_float(s: str) -> float:
     match = re.search('[0-9]+(?:.[0-9]+)?', s)
@@ -11,7 +14,8 @@ def first_float(s: str) -> float:
         raise Exception("float not found")
     else:
         return float(match[0])
-    
+
+
 def process_utilization(util_dict):
     capture = {'Flop & Latch': 'Reg', 'LUT': 'LUTx', 'CarryLogic': 'CARRY'}
     categories = {key: 0 for key in capture.values()}
@@ -26,7 +30,7 @@ def process_utilization(util_dict):
                 categories[primitive_type['Ref Name']] = int(primitive_type['Used'])
 
     return categories
-    
+
 
 def wrangle_dataframe(df):
     # Maintain list of found primitives to select those columns later
@@ -49,9 +53,9 @@ def wrangle_dataframe(df):
            .sort_index() \
            .loc[:, ['delay_route', 'delay_logic', 'power_static', 'power_dynamic'] + list(existing_primitives)]
     return df
-    
-def main():
 
+ 
+def main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
         '-f',
@@ -116,7 +120,6 @@ def main():
     df.to_html('out.html')
     df.to_hdf('data.hdf', key='df')
     
-
 
 if __name__ == "__main__":
     main()
