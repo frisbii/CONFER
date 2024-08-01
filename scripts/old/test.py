@@ -21,7 +21,7 @@ df["primitives_total"] = [sum(int(y["Used"]) for y in x) for x in df["primitives
 
 
 def split_utilization(df: pd.DataFrame):
-    '''Return a utilization DataFrame indexed by width where each column is a primitive'''
+    """Return a utilization DataFrame indexed by width where each column is a primitive"""
     return (
         df["primitives"]
         .apply(
@@ -36,12 +36,14 @@ def split_utilization(df: pd.DataFrame):
         .fillna(0)
     )
 
+
 def aggregate_lut_utilization(utilization: pd.DataFrame):
-    '''Combine the LUTx columns of a utilization DataFrame into one column'''
-    lut_columns = list(filter(lambda label: label.startswith('LUT'), utilization.columns))
-    lutx_column = utilization.apply(lambda row: row[lut_columns].sum(), axis='columns')
+    """Combine the LUTx columns of a utilization DataFrame into one column"""
+    lut_columns = list(
+        filter(lambda label: label.startswith("LUT"), utilization.columns)
+    )
+    lutx_column = utilization.apply(lambda row: row[lut_columns].sum(), axis="columns")
     return utilization.drop(columns=lut_columns).assign(LUTx=lutx_column)
-    
 
 
 sns.set_theme()
@@ -70,19 +72,23 @@ def paired_column_facets(
         ax.set_ylabel(row_name)
     return g
 
+
 def plot_utilization(datatype: str, operation: str, *, aggregate_luts=True):
     data = (
-        df.set_index(["datatype", "operation"]).loc[(datatype, operation), :].set_index("width")
+        df.set_index(["datatype", "operation"])
+        .loc[(datatype, operation), :]
+        .set_index("width")
     )
     utilization = split_utilization(data)
     if aggregate_luts:
         utilization = aggregate_lut_utilization(utilization)
-    utilization.plot(kind='bar', stacked=True, width=1, title=f'{datatype}_{operation}')
+    utilization.plot(kind="bar", stacked=True, width=1, title=f"{datatype}_{operation}")
 
-for pair in itertools.product(['uint', 'float', 'posit'], ['ADD', 'MUL']):
+
+for pair in itertools.product(["uint", "float", "posit"], ["ADD", "MUL"]):
     plot_utilization(*pair)
 
-plt.savefig('test.png')
+plt.savefig("test.png")
 
 # Stacked Line Plot
 # data = (

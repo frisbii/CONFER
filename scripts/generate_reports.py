@@ -97,8 +97,7 @@ class ReportGenerator:
 
         with ThreadPoolExecutor(self.config.max_processes) as executor:
             futures = [
-                executor.submit(self.process_design, design)
-                for design in designs
+                executor.submit(self.process_design, design) for design in designs
             ]
 
             for future in as_completed(futures):
