@@ -68,10 +68,12 @@ class Config:
         self.generation.periods = config_dict["generation"]["periods"]
         self.generation.widths = self.parse_widths(config_dict["generation"]["widths"])
 
+        self.visualization.parameters_order = config_dict["visualization"]["parameters_order"]
         self.visualization.categorical = config_dict["visualization"]["categorical"]
+        self.visualization.show_annotation = config_dict["visualization"]["show_annotation"]
         self.visualization.datatypes = config_dict["visualization"]["datatypes"]
         self.visualization.operations = config_dict["visualization"]["operations"]
-        self.visualization.widths = config_dict["visualization"]["widths"]
+        self.visualization.widths = self.parse_widths(config_dict["visualization"]["widths"])
         self.visualization.parts = config_dict["visualization"]["parts"]
         self.visualization.periods = config_dict["visualization"]["periods"]
 

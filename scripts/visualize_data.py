@@ -20,44 +20,33 @@ def show_annotation(sel: mplcursors.Selection):
         sel.annotation.get_bbox_patch().set_alpha(0.8)
 
 
-def generate_plots(config: Config, df: pd.DataFrame):
-    # defines the order and available variables
-    variables = [
-        "operation",
-        "part",
-        "datatype",
-        "width",
-        "period",
-    ]  # last one is x-axis
-    variable_values = {
-        "operation": ["MUL"],
-        "datatype": ["float"],
-        "part": ["xc7s50csga324-1"],
-        "width": [16],
-        "period": [3, 10, 100, 1000],
-    }
-    # where empty means use every available value (in dataframe? or in given ordered list?)
+def get_parameter_values(config: Config, parameter_name: str):
+    values = getattr(config.visualization, parameter_name + 's')
+    if values == []:
+        values = getattr(config.generation, parameter_name + 's')
+    return values
 
-    # Compute the list of full parameterizations to visualize this run.
-    # TODO: parameterizations is the wrong word for this purpose.
-    # TODO: the getattr() call is a janky hack.
-    parameterizations = list(
+
+def generate_plots(config: Config, df: pd.DataFrame):
+    # Compute the list of designs to visualize this run.
+    designs = list(
         itertools.product(
             *[
-                variable_values.get(var, getattr(config, var + "s"))
-                for var in variables[:-1]
+                get_parameter_values(config, param)
+                for param in config.visualization.parameters_order[:-1]
             ]
         )
     )
 
     # create figure and prepare subfigures
     fig = plt.figure()
-    sfigs = fig.subfigures(1, len(parameterizations), squeeze=False)[0]
+    sfigs = fig.subfigures(1, len(designs), squeeze=False)[0]
 
-    df = df.reset_index().set_index(variables)
-
+    df = df.reset_index().set_index(config.visualization.parameters_order)
+    print(df)
+    print(config.visualization.widths)
     # VISUALIZATION
-    for i, p in enumerate(parameterizations):
+    for i, p in enumerate(designs):
         # Create figure and axes
         subfig = sfigs[i]
         axs = sfigs[i].subplots(3, 1, sharex=True)
@@ -70,34 +59,37 @@ def generate_plots(config: Config, df: pd.DataFrame):
             axs[0].set_ylabel("Primitives count")
             axs[1].set_ylabel("Delay (ns)")
             axs[2].set_ylabel("Power usage (W)")
-        axs[2].set_xlabel(variables[-1])
+        axs[2].set_xlabel(config.visualization.parameters_order[-1])
 
         # Utilization
         stack_bars(
             axs[0],
             df.loc[p]
             .drop(
-                ["delay_route", "delay_logic", "power_static", "power_dynamic"], axis=1
+                columns = ["delay_route", "delay_logic", "power_static", "power_dynamic"]
             )
             .copy(),
+            config.visualization.categorical
         )
         # Timing
-        stack_bars(axs[1], df.loc[p].loc[:, ["delay_route", "delay_logic"]].copy())
+        stack_bars(axs[1], df.loc[p].loc[:, ["delay_route", "delay_logic"]].copy(), config.visualization.categorical)
         # Power
-        stack_bars(axs[2], df.loc[p].loc[:, ["power_dynamic"]].copy())
+        stack_bars(axs[2], df.loc[p].loc[:, ["power_dynamic"]].copy(), config.visualization.categorical)
 
-    cursor = mplcursors.cursor(hover=True)
-    cursor.connect("add", show_annotation)
-
+    if config.visualization.show_annotation:
+        cursor = mplcursors.cursor(hover=True)
+        cursor.connect("add", show_annotation)
+        
     plt.show()
 
 
-def stack_bars(ax: Axes, df: pd.DataFrame):
+def stack_bars(ax: Axes, df: pd.DataFrame, is_categorical: bool):
     bottom_values = [0] * len(df)
+    xtick_locations = range(len(df.index)) if is_categorical else df.index
     for col in df.columns:
         # plot each column on top of each other
-        ax.bar(range(len(df.index)), df[col], bottom=bottom_values, label=col, width=1)
-        ax.set_xticks(range(len(df.index)), df.index)
+        ax.bar(xtick_locations, df[col], bottom=bottom_values, label=col, width=0.95 if is_categorical else 1)
+        ax.set_xticks(xtick_locations, df.index)
         # add the new values to the bottom_values baseline to prepare for the next column
         bottom_values = [i + j for i, j in zip(bottom_values, df[col])]
     ax.legend()
