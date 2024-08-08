@@ -1,6 +1,4 @@
-#########################
-#   Run Dependencies    #
-#########################
+[Run Dependencies]
 
 # Full path specifying the installation location of Vivado HLS
 vhls_install_path = "C:\Xilinx\Vitis_HLS\2023.1\bin\vitis_hls.bat"
@@ -25,18 +23,10 @@ cflags = [
 ]
 
 
-#####################
-#   Run Controls    #
-#####################
+[Run Controls]
 
 # Maximum number of processes to spawn at a time when generating reports
 max_processes = 6
-
-# NONFUNCTIONAL
-# Flag to determine whether to spawn a separate console for each report.
-# Only one console will ever be spawned at a time. Thus, max_processes is
-# de facto overriden to be equal to 1.
-#spawn_console = true
 
 # Datatypes to generate reports for
 #   type        list[str]
@@ -54,15 +44,16 @@ operations = [
 ]
 
 # Widths to generate reports for
-#   type            str | list[int]
-#   if type==str    Interpreted as "{start}-{end}" where `start` is the
-#                   first width to generate, `end` is one greater than
-#                   the last width to generate, and every integer width
-#                   between these ends is generated.
-#                   ex: "8-17"
-#   if type==list   Only the specified integer widths are generated.
-#                   ex: [4, 8, 16]
-widths = [4, 6, 8, 10, 12, 14, 16]
+#   type    str
+#   if the string is of the format "{start}-{end}"    
+#       Interpreted as "{start}-{end}" where `start` is the
+#       first width to generate, `end` is one greater than
+#       the last width to generate, and every integer width
+#       between these ends is generated.
+#       ex: "8-17"
+#   if the string is of the format "{1}, {2}, ..."  
+#       Only the specified widths are generated
+widths = "1-17"
 
 # Part number corresponding to target Xilinx FPGA part to synthesize to
 #   default: "xc7s50csga324-1" (Arty S7-50)
@@ -74,3 +65,25 @@ parts = [
 # Clock period to target for synthesis, in nanoseconds
 #   default: 10ns
 periods = [3]
+
+
+
+[Visualization Controls]
+# Refer to run control comments for usage
+
+datatypes = [
+    'uint'
+]
+
+operations = [
+    'MUL'
+]
+
+widths = "1-17"
+
+parts = [
+    "xc7k160tfbg484-1"
+]
+
+periods = [3]
+
