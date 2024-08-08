@@ -1,5 +1,4 @@
-[Run Dependencies]
-
+[dependencies]
 # Full path specifying the installation location of Vivado HLS
 vhls_install_path = "C:\Xilinx\Vitis_HLS\2023.1\bin\vitis_hls.bat"
 
@@ -23,8 +22,7 @@ cflags = [
 ]
 
 
-[Run Controls]
-
+[generation]
 # Maximum number of processes to spawn at a time when generating reports
 max_processes = 6
 
@@ -68,7 +66,7 @@ periods = [3]
 
 
 
-[Visualization Controls]
+[visualization]
 # Refer to run control comments for usage
 
 datatypes = [
