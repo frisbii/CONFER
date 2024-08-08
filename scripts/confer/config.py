@@ -27,7 +27,9 @@ class Generation:
 
 
 class Visualization:
+    parameters_order:list[str]
     categorical: bool
+    show_annotation: bool
     datatypes: list[str]
     operations: list[str]
     widths: list[int]

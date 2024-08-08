@@ -79,7 +79,6 @@ def main():
     )
     args = parser.parse_args()
     indir = args.d
-    outfile = args.f
 
     # startup tasks
     rpt_dir: Path = PROJECT_ROOT / indir
@@ -141,7 +140,7 @@ def main():
 
     df = wrangle_dataframe(df)
 
-    df.to_html("out.html")
+    #df.to_html("out.html")
     df.to_hdf("data.hdf", key="df")
 
 

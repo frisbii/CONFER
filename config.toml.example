@@ -69,6 +69,9 @@ parameters_order = ['datatype', 'operation', 'part', 'period', 'width']
 # Whether the plot should assume the x-axis is a categorical or quantitative.
 categorical = false
 
+# Whether to enable annotations to pop up on mouse over of bar charts.
+show_annotation = false
+
 # The following settings control which values of the design parameters to use
 # when plotting the data with scripts/visualize_data.py. These values must be
 # present in the HDF file you pass to visualize_data.py (default: 'data.hdf').

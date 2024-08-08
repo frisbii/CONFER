@@ -43,8 +43,7 @@ def generate_plots(config: Config, df: pd.DataFrame):
     sfigs = fig.subfigures(1, len(designs), squeeze=False)[0]
 
     df = df.reset_index().set_index(config.visualization.parameters_order)
-    print(df)
-    print(config.visualization.widths)
+    
     # VISUALIZATION
     for i, p in enumerate(designs):
         # Create figure and axes
