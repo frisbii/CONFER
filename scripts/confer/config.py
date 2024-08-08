@@ -6,44 +6,77 @@ from typing import Any
 from .design import Design
 
 
-class Config:
-    vhls_install_path: str
-    vivado_install_path: str
+class Dependencies:
+    vhls_path: str
+    vivado_path: str
     cflags: list[str]
 
-    max_processes: int
 
+class Generation:
+    max_processes: int
     datatypes: list[str]
     operations: list[str]
     widths: list[int]
     parts: list[str]
     periods: list[int]
 
+    def product(self):
+        return itertools.product(
+                self.datatypes, self.operations, self.widths, self.parts, self.periods
+            )
+
+
+class Visualization:
+    categorical: bool
+    datatypes: list[str]
+    operations: list[str]
+    widths: list[int]
+    parts: list[str]
+    periods: list[int]
+
+
+class Config:
+    dependencies: Dependencies
+    generation: Generation
+    visualization: Visualization
+
+    def parse_widths(self, width: str) -> list[int]:
+        if '-' in width:
+            start, end = [int(x) for x in width.split('-')]
+            return list(range(start, end))
+        elif ',' in width:
+            return [int(x.strip()) for x in width.split(',')]
+        else:
+            return [int(width)]
+
     def __init__(self, config_path: Path):
+        self.dependencies = Dependencies()
+        self.generation = Generation()
+        self.visualization = Visualization()
+
         with open(config_path, "rb") as f:
             config_dict: dict[str, Any] = tomllib.load(f)
 
-        self.vhls_install_path = config_dict["vhls_install_path"]
-        self.vivado_install_path = config_dict["vivado_install_path"]
-        self.cflags = config_dict["cflags"]
+        self.dependencies.vhls_path = config_dict["dependencies"]["vhls_path"]
+        self.dependencies.vivado_path = config_dict["dependencies"]["vivado_path"]
+        self.dependencies.cflags = config_dict["dependencies"]["cflags"]
 
-        self.max_processes = config_dict["max_processes"]
+        self.generation.max_processes = config_dict["generation"]["max_processes"]
+        self.generation.datatypes = config_dict["generation"]["datatypes"]
+        self.generation.operations = config_dict["generation"]["operations"]
+        self.generation.parts = config_dict["generation"]["parts"]
+        self.generation.periods = config_dict["generation"]["periods"]
+        self.generation.widths = self.parse_widths(config_dict["generation"]["widths"])
 
-        self.datatypes = config_dict["datatypes"]
-        self.operations = config_dict["operations"]
-        self.parts = config_dict["parts"]
-        self.periods = config_dict["periods"]
-
-        if isinstance(config_dict["widths"], str):
-            start, end = [int(x) for x in config_dict["widths"].split("-")]
-            self.widths = list(range(start, end))
-        else:
-            self.widths = config_dict["widths"]
+        self.visualization.categorical = config_dict["visualization"]["categorical"]
+        self.visualization.datatypes = config_dict["visualization"]["datatypes"]
+        self.visualization.operations = config_dict["visualization"]["operations"]
+        self.visualization.widths = config_dict["visualization"]["widths"]
+        self.visualization.parts = config_dict["visualization"]["parts"]
+        self.visualization.periods = config_dict["visualization"]["periods"]
 
     def generate_designs(self):
         return [
             Design(*x)
-            for x in itertools.product(
-                self.datatypes, self.operations, self.widths, self.parts, self.periods
-            )
+            for x in self.generation.product()
         ]

@@ -1,19 +1,18 @@
 [dependencies]
 # Full path specifying the installation location of Vivado HLS
-vhls_install_path = "C:\Xilinx\Vitis_HLS\2023.1\bin\vitis_hls.bat"
+vhls_path = 'C:\Xilinx\Vitis_HLS\2023.1\bin\vitis_hls.bat'
 
 # Full path specifying the installation location of Vivado
-vivado_install_path = "C:\Xilinx\Vivado\2023.1\bin\vivado.bat" 
+vivado_path = 'C:\Xilinx\Vivado\2023.1\bin\vivado.bat' 
 
-# Full path specifying the include folder of the Hint library
-hint_install_path = "C:\Users\mgudin27\include\hint\include"
-
-# Full path specifying the include folder of the MArTo library
-marto_install_path = "C:\Users\mgudin27\include\marto\include"
-
-# List of C-flags to pass to Vivado"s C/C++ interpreter
+# List of C-flags to pass to Vivado's C/C++ interpreter
 cflags = [
-    "-std=c++0x" # necessary for the Hint library
+        # necessary for the Hint library
+    '-std=c++0x', 
+        # full path specifying the include folder of the Hint library
+    'C:\Users\mgudin27\include\hint\include', 
+        # full path specifying the include folder of the MArTo library
+    'C:\Users\mgudin27\include\marto\include'
 ]
 
 
@@ -25,7 +24,7 @@ max_processes = 6
 #   type        list[str]
 #   contents    `name` corresponding to {name}.cpp files in ROOT/src.
 datatypes = [
-    "uint"
+    'uint'
 ]
 
 # Operations to generate reports for
@@ -33,26 +32,26 @@ datatypes = [
 #   contents    `NAME` corresponding to `NAME` macros in the src files
 #               which select which implemented operation to generate.
 operations = [
-    "MUL"
+    'MUL'
 ]
 
 # Widths to generate reports for
 #   type    str
-#   if the string is of the format "{start}-{end}"    
-#       Interpreted as "{start}-{end}" where `start` is the
+#   if the string is of the format '{start}-{end}'    
+#       Interpreted as '{start}-{end}' where `start` is the
 #       first width to generate, `end` is one greater than
 #       the last width to generate, and every integer width
 #       between these ends is generated.
-#       ex: "8-17"
-#   if the string is of the format "{1}, {2}, ..."  
+#       ex: '8-17'
+#   if the string is of the format '{1},{2},...'  
 #       Only the specified widths are generated
-widths = "1-17"
+widths = '1-17'
 
 # Part number corresponding to target Xilinx FPGA part to synthesize to
-#   default: "xc7s50csga324-1" (Arty S7-50)
+#   default: 'xc7s50csga324-1' (Arty S7-50)
 #   xc7k160tfbg484-1 (Kintex 7; Uguen et al. 2019)
 parts = [
-    "xc7k160tfbg484-1"
+    'xc7k160tfbg484-1'
 ]
 
 # Clock period to target for synthesis, in nanoseconds
@@ -68,7 +67,7 @@ periods = [3]
 parameters_order = ['datatype', 'operation', 'part', 'period', 'width']
 
 # Whether the plot should assume the x-axis is a categorical or quantitative.
-categorical = False
+categorical = false
 
 # The following settings control which values of the design parameters to use
 # when plotting the data with scripts/visualize_data.py. These values must be
@@ -77,17 +76,17 @@ categorical = False
 # setting of the same name in the generation section.
 
 datatypes = [
-    "uint"
+    'uint'
 ]
 
 operations = [
-    "MUL"
+    'MUL'
 ]
 
-widths = "1-17"
+widths = '1-17'
 
 parts = [
-    "xc7k160tfbg484-1"
+    'xc7k160tfbg484-1'
 ]
 
 periods = [3]

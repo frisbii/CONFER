@@ -39,7 +39,7 @@ class ReportGenerator:
             "SRC_FILE": Path.as_posix(PROJECT_ROOT / "src" / f"{design.datatype}.cpp"),
             "HEADER_FILE": Path.as_posix(PROJECT_ROOT / "src" / "params.hpp"),
             "CFLAGS": " ".join(
-                self.config.cflags
+                self.config.dependencies.cflags
                 + [f"-D{design.operation}", f"-DWIDTH={design.width}"]
             ),
             "PART": design.part,
@@ -48,7 +48,7 @@ class ReportGenerator:
 
         subprocess.run(
             [
-                self.config.vhls_install_path,
+                self.config.dependencies.vhls_path,
                 "-f",
                 str(PROJECT_ROOT / "scripts" / "tcl" / "vhls_generate_ip.tcl"),
                 "-l",
@@ -75,7 +75,7 @@ class ReportGenerator:
 
         subprocess.run(
             [
-                self.config.vivado_install_path,
+                self.config.dependencies.vivado_path,
                 "-journal",
                 str(self.log_dir / f"{str(design)}---vivado.jou"),
                 "-log",
@@ -98,7 +98,7 @@ class ReportGenerator:
         )
         bar.update()
 
-        with ThreadPoolExecutor(self.config.max_processes) as executor:
+        with ThreadPoolExecutor(self.config.generation.max_processes) as executor:
             futures = [
                 executor.submit(self.process_design, design) for design in designs
             ]
