@@ -62,7 +62,19 @@ periods = [3]
 
 
 [visualization]
-# Refer to run control comments for usage
+# The order in which to iterate through the values of each design parameter when
+# generating the visualization columns. No available parameter may be omitted.
+# The last parameter in the list will be the x-axis of the generated plots.
+parameters_order = ['datatype', 'operation', 'part', 'period', 'width']
+
+# Whether the plot should assume the x-axis is a categorical or quantitative.
+categorical = False
+
+# The following settings control which values of the design parameters to use
+# when plotting the data with scripts/visualize_data.py. These values must be
+# present in the HDF file you pass to visualize_data.py (default: 'data.hdf').
+# If any of the following settings is unset or empty, it will default to the
+# setting of the same name in the generation section.
 
 datatypes = [
     "uint"
