@@ -1,18 +1,18 @@
 [dependencies]
 # Full path specifying the installation location of Vivado HLS
-vhls_path = 'C:\Xilinx\Vitis_HLS\2023.1\bin\vitis_hls.bat'
+vhls_path = '''C:\Xilinx\Vivado\2018.3\bin\vivado_hls.bat'''
 
 # Full path specifying the installation location of Vivado
-vivado_path = 'C:\Xilinx\Vivado\2023.1\bin\vivado.bat' 
+vivado_path = '''C:\Xilinx\Vivado\2018.3\bin\vivado.bat'''
 
 # List of C-flags to pass to Vivado's C/C++ interpreter
 cflags = [
         # necessary for the Hint library
     '-std=c++0x', 
         # full path specifying the include folder of the Hint library
-    'C:\Users\mgudin27\include\hint\include', 
+    '''C:\Users\mgudin27\include\hint\include''', 
         # full path specifying the include folder of the MArTo library
-    'C:\Users\mgudin27\include\marto\include'
+    '''C:\Users\mgudin27\include\marto\include'''
 ]
 
 
@@ -45,7 +45,7 @@ operations = [
 #       ex: '8-17'
 #   if the string is of the format '{1},{2},...'  
 #       Only the specified widths are generated
-widths = '1-17'
+widths = '8'
 
 # Part number corresponding to target Xilinx FPGA part to synthesize to
 #   default: 'xc7s50csga324-1' (Arty S7-50)
