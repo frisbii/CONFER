@@ -14,6 +14,7 @@ from confer import add_config_path, Config, Design, PROJECT_ROOT
 class ReportGenerator:
     def __init__(self, config: Config):
         now: datetime = datetime.now()
+        # timestamp is used to mark the output folder for this set of runs
         self.timestamp: str = (
             f"{now.year}-{now.month}-{now.day}_{now.hour}-{now.minute}-{now.second}"
         )
@@ -25,11 +26,13 @@ class ReportGenerator:
         self.prj_dir: Path = self.run_dir / "prj"
         self.rpt_dir: Path = self.run_dir / "rpt"
 
+        # create output folders
         for dir in [self.run_dir, self.log_dir, self.prj_dir, self.rpt_dir]:
             dir.mkdir(parents=True)
 
     def process_design(self, design: Design):
         # Extend the existing environment in preparation for the VHLS script
+        # The tcl scripts read these as environment variables
         env = os.environ | {
             "PRJ_DIR": self.prj_dir.as_posix(),
             "PRJ_NAME": str(design),

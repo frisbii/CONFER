@@ -6,19 +6,14 @@ vhls_install_path = "C:\Xilinx\Vitis_HLS\2023.1\bin\vitis_hls.bat"
 vivado_install_path = "C:\Xilinx\Vivado\2023.1\bin\vivado.bat" 
 
 # Full path specifying the include folder of the Hint library
-hint_install_path = ""
-# Full path specifying the include folder of the MArTo library
-marto_install_path = ""
-#TODO: ADD FUNCTIONALITY FOR ABOVE
+hint_install_path = "C:\Users\mgudin27\include\hint\include"
 
-# List of C-flags to pass to Vivado's C/C++ interpreter
-#   cflags[0]   Full path specifying the location of the include directory
-#               containing C++ dependencies
-#   cflags[1]   An argument necessary to synthesize with dependencies
+# Full path specifying the include folder of the MArTo library
+marto_install_path = "C:\Users\mgudin27\include\marto\include"
+
+# List of C-flags to pass to Vivado"s C/C++ interpreter
 cflags = [
-    "-C:\Users\mgudin27\include\marto\include",
-    "-C:\Users\mgudin27\include\hint\include",
-    "-std=c++0x"
+    "-std=c++0x" # necessary for the Hint library
 ]
 
 
@@ -30,7 +25,7 @@ max_processes = 6
 #   type        list[str]
 #   contents    `name` corresponding to {name}.cpp files in ROOT/src.
 datatypes = [
-    'uint'
+    "uint"
 ]
 
 # Operations to generate reports for
@@ -38,7 +33,7 @@ datatypes = [
 #   contents    `NAME` corresponding to `NAME` macros in the src files
 #               which select which implemented operation to generate.
 operations = [
-    'MUL'
+    "MUL"
 ]
 
 # Widths to generate reports for
@@ -70,11 +65,11 @@ periods = [3]
 # Refer to run control comments for usage
 
 datatypes = [
-    'uint'
+    "uint"
 ]
 
 operations = [
-    'MUL'
+    "MUL"
 ]
 
 widths = "1-17"
